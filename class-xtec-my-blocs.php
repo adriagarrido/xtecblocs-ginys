@@ -53,50 +53,36 @@ class XTEC_My_Blocs extends WP_Widget {
 				$level = $current_user->$value;
 				switch ( $level ) {
 					case '':
-						$image = 'subscrip';
+						$image = 'user';
 						$text  = 'Entra';
 						break;
 					case 10:
-						$image = 'admin';
+						$image = 'tools';
 						$text  = 'Administra';
 						break;
 					default:
-						$image = 'edit';
+						$image = 'pencil-alt';
 						$text  = 'Escriu';
 				}
 				$number = xtec_descriptors_count_bloc_descriptors( $blog->userblog_id );
 				?>
 				<li>
 					<a href='http://<?php echo $blog->domain . $blog->path; ?>' target="_blank" title="Entra al bloc"><?php echo esc_html( stripslashes( $blog->blogname ) ); ?></a>
-					<?php if ( 'old' === $instance['style'] ) : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/' target="_blank" title="<?php echo $text; ?>">
-							<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) ); ?>images/<?php echo $image; ?>.gif" border="0" alt="<?php echo $text; ?>" class="myicon" />
-						</a>
-						<?php if ( 'admin' === $image && 1 !== $blog->userblog_id ) : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/ms-delete-site.php' target="_blank" title="Elimina el bloc">
-							<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) ); ?>images/delete.gif" border=0 alt="Elimina el Bloc" class="myicon" />
-						</a>
+					<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/' target="_blank" title="<?php echo $text; ?>" style="color:<?php echo $instance['color']; ?>">
+						<?php if ( 'old' === $instance['style'] ) : ?>
+						<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) ); ?>images/<?php echo $image; ?>.gif" border="0" alt="<?php echo $text; ?>" class="myicon" />
+						<?php else: ?>
+						<i class="fas fa-<?php echo esc_attr( $image ); ?>"></i>
 						<?php endif; ?>
-					<?php else : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/' target="_blank" title="<?php echo $text; ?>" style="color: <?php echo esc_attr( $instance['color'] ); ?>">
-							<?php
-							if ( 'subscrip' === $image ) {
-								$image = 'user';
-							}
-							if ( 'admin' === $image ) {
-								$image = 'tools';
-							}
-							if ( 'edit' === $image ) {
-								$image = 'edit';
-							}
-							?>
-							<i class="fas fa-<?php echo esc_attr( $image ); ?>"></i>
-						</a>
-						<?php if ( 'tools' === $image && 1 !== $blog->userblog_id ) : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/ms-delete-site.php' target="_blank" title="Elimina el bloc" style="color: <?php echo esc_attr( $instance['color'] ); ?>">
-							<i class="fas fa-trash"></i>
-						</a>
+					</a>
+					<?php if ( 'tools' === $image && 1 !== $blog->userblog_id ) : ?>
+					<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/ms-delete-site.php' target="_blank" title="Elimina el bloc" style="color:<?php echo $instance['color']; ?>">
+						<?php if ( 'old' === $instance['style'] ) : ?>
+						<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) ); ?>images/delete.gif" border=0 alt="Elimina el Bloc" class="myicon" />
+						<?php else: ?>
+						<i class="fas fa-trash"></i>
 						<?php endif; ?>
+					</a>
 					<?php endif; ?>
 				</li>
 				<?php
@@ -143,8 +129,8 @@ class XTEC_My_Blocs extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'color' ) ); ?>">
 				<?php esc_attr_e( 'Color:', 'text_domain' ); ?>
-			</label> 
-			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'color' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="color" value="<?php echo esc_attr( $color ); ?>">
+			</label>
+			<input id="<?php echo esc_attr( $this->get_field_id( 'color' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'color' ) ); ?>" type="text" class="mi-plugin-color-field" value="<?php echo esc_attr( 'color' ); ?>">
 		</p>
 		<?php
 
@@ -161,6 +147,7 @@ class XTEC_My_Blocs extends WP_Widget {
 
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? wp_strip_all_tags( $new_instance['title'] ) : '';
 		$instance['style'] = ( ! empty( $new_instance['style'] ) ) ? wp_strip_all_tags( $new_instance['style'] ) : 'old';
+		$instance['color'] = ( ! empty( $new_instance['color'] ) ) ? wp_strip_all_tags( $new_instance['color'] ) : '#000000';
 
 		return $instance;
 

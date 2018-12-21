@@ -9,6 +9,22 @@ Author URI:
 */
 
 /**
+ * Undocumented function
+ *
+ * @param [type] $hook_suffix
+ * @return void
+ */
+function mi_script_enqueue_color_picker( $hook_suffix ) {
+
+	wp_enqueue_style( 'wp-color-picker' );
+	wp_enqueue_script( 'mi-script', plugins_url( 'js/script.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
+
+}
+
+// add js
+add_action( 'admin_enqueue_scripts', 'mi_script_enqueue_color_picker' );
+
+/**
  * Register and enqueue FontAwesome css.
  *
  * @return void
