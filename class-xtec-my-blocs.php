@@ -1,11 +1,9 @@
 <?php
 /**
- * Description.
+ * Undocumented file.
  *
  * @package category
  */
-
-require_once 'xtecfunc.php';
 
 /**
  * Undocumented class
@@ -29,13 +27,15 @@ class XTEC_My_Blocs extends WP_Widget {
 	/**
 	 * Output the widget content on the front-end
 	 *
-	 * @param [type] $args
-	 * @param [type] $instance
+	 * @param [type] $args No comment yet.
+	 * @param [type] $instance No comment yet.
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
 
 		global $current_user;
+
+		echo $args['before_widget'];
 
 		if ( is_user_logged_in() ) {
 			$blogs = get_blogs_of_user( $current_user->ID );
@@ -43,11 +43,12 @@ class XTEC_My_Blocs extends WP_Widget {
 
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'];
-			echo apply_filters( 'widget_title', $instance['title'] );
+			echo esc_html( apply_filters( 'widget_title', $instance['title'] ) );
 			echo $args['after_title'];
 		}
 
 		if ( ! empty( $blogs ) ) {
+			echo '<ul>';
 			foreach ( $blogs as $blog ) {
 				$value = 'wp_' . $blog->userblog_id . '_user_level';
 				$level = $current_user->$value;
@@ -67,18 +68,19 @@ class XTEC_My_Blocs extends WP_Widget {
 				$number = xtec_descriptors_count_bloc_descriptors( $blog->userblog_id );
 				?>
 				<li>
-					<a href='http://<?php echo $blog->domain . $blog->path; ?>' target="_blank" title="Entra al bloc"><?php echo esc_html( stripslashes( $blog->blogname ) ); ?></a>
+					<a href="<?php echo esc_attr( 'http://' . $blog->domain . $blog->path ); ?>" target="_blank" title="Entra al bloc"><?php echo esc_html( stripslashes( $blog->blogname ) ); ?></a>
+					&nbsp;
 					<?php if ( 'old' === $instance['style'] ) : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/' target="_blank" title="<?php echo $text; ?>">
-							<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) ); ?>images/<?php echo $image; ?>.gif" border="0" alt="<?php echo $text; ?>" class="myicon" />
+						<a href="<?php echo esc_attr( 'http://' . $blog->domain . $blog->path . 'wp-admin/' ); ?>" target="_blank" title="<?php echo esc_attr( $text ); ?>">
+							<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) . 'images/' . $image . '.gif' ); ?>" alt="<?php echo esc_attr( $text ); ?>" class="myicon" />
 						</a>
 						<?php if ( 'admin' === $image && 1 !== $blog->userblog_id ) : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/ms-delete-site.php' target="_blank" title="Elimina el bloc">
-							<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) ); ?>images/delete.gif" border=0 alt="Elimina el Bloc" class="myicon" />
+						<a href="<?php echo esc_attr( 'http://' . $blog->domain . $blog->path . 'wp-admin/ms-delete-site.php' ); ?>" target="_blank" title="Elimina el bloc">
+							<img src="<?php echo esc_attr( plugin_dir_url( __FILE__ ) . 'images/delete.gif' ); ?>" alt="Elimina el Bloc" class="myicon" />
 						</a>
 						<?php endif; ?>
 					<?php else : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/' target="_blank" title="<?php echo $text; ?>" style="color: <?php echo esc_attr( $instance['color'] ); ?>">
+						<a href="<?php echo esc_attr( 'http://' . $blog->domain . $blog->path . 'wp-admin/' ); ?>" target="_blank" title="<?php echo esc_attr( $text ); ?>" >
 							<?php
 							if ( 'subscrip' === $image ) {
 								$image = 'user';
@@ -90,17 +92,18 @@ class XTEC_My_Blocs extends WP_Widget {
 								$image = 'edit';
 							}
 							?>
-							<i class="fas fa-<?php echo esc_attr( $image ); ?>"></i>
+							<i class="fas fa-<?php echo esc_attr( $image ); ?> my-blocs-image-color"></i>
 						</a>
 						<?php if ( 'tools' === $image && 1 !== $blog->userblog_id ) : ?>
-						<a href='http://<?php echo $blog->domain . $blog->path; ?>wp-admin/ms-delete-site.php' target="_blank" title="Elimina el bloc" style="color: <?php echo esc_attr( $instance['color'] ); ?>">
-							<i class="fas fa-trash"></i>
+						<a href="<?php echo esc_attr( 'http://' . $blog->domain . $blog->path . 'wp-admin/ms-delete-site.php' ); ?>" target="_blank" title="Elimina el bloc" >
+							<i class="fas fa-trash my-blocs-image-color"></i>
 						</a>
 						<?php endif; ?>
 					<?php endif; ?>
 				</li>
 				<?php
 			}
+			echo '</ul>';
 		} else {
 			echo esc_html__( 'No posts selected!', 'text_domain' );
 		}
@@ -112,12 +115,12 @@ class XTEC_My_Blocs extends WP_Widget {
 	/**
 	 * Output the option form field in admin Widgets screen.
 	 *
-	 * @param [type] $instance
+	 * @param [type] $instance No comment yet.
 	 * @return void
 	 */
 	public function form( $instance ) {
 
-		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Title', 'text_domain' );
+		$title = ! empty( $instance['title'] ) ? $instance['title'] : esc_html__( 'Els meus blocs', 'text_domain' );
 		?>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">
@@ -140,12 +143,6 @@ class XTEC_My_Blocs extends WP_Widget {
 				<?php esc_attr_e( 'New', 'text_domain' ); ?>
 			</label>
 		</p>
-		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'color' ) ); ?>">
-				<?php esc_attr_e( 'Color:', 'text_domain' ); ?>
-			</label> 
-			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'color' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="color" value="<?php echo esc_attr( $color ); ?>">
-		</p>
 		<?php
 
 	}
@@ -153,13 +150,13 @@ class XTEC_My_Blocs extends WP_Widget {
 	/**
 	 * Save options.
 	 *
-	 * @param [type] $new_instance
-	 * @param [type] $old_instance
-	 * @return void
+	 * @param [type] $new_instance No comment yet.
+	 * @param [type] $old_instance No comment yet.
+	 * @return array $instance
 	 */
 	public function update( $new_instance, $old_instance ) {
 
-		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? wp_strip_all_tags( $new_instance['title'] ) : '';
+		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? wp_strip_all_tags( $new_instance['title'] ) : 'Els meus blocs';
 		$instance['style'] = ( ! empty( $new_instance['style'] ) ) ? wp_strip_all_tags( $new_instance['style'] ) : 'old';
 
 		return $instance;
