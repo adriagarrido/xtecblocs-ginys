@@ -54,15 +54,15 @@ class XTEC_My_Blocs extends WP_Widget {
 				$level = $current_user->$value;
 				switch ( $level ) {
 					case '':
-						$image = 'subscrip';
+						$image = 'user';
 						$text  = 'Entra';
 						break;
 					case 10:
-						$image = 'admin';
+						$image = 'tools';
 						$text  = 'Administra';
 						break;
 					default:
-						$image = 'edit';
+						$image = 'pencil-alt';
 						$text  = 'Escriu';
 				}
 				$number = xtec_descriptors_count_bloc_descriptors( $blog->userblog_id );
@@ -74,24 +74,13 @@ class XTEC_My_Blocs extends WP_Widget {
 						<a href="<?php echo esc_url( 'http://' . $blog->domain . $blog->path . 'wp-admin/' ); ?>" target="_blank" title="<?php echo esc_attr( $text ); ?>">
 							<img src="<?php echo esc_url( plugin_dir_url( __FILE__ ) . 'images/' . $image . '.gif' ); ?>" alt="<?php echo esc_attr( $text ); ?>" class="myicon" />
 						</a>
-						<?php if ( 'admin' === $image && 1 !== $blog->userblog_id ) : ?>
+						<?php if ( 'tools' === $image && 1 !== $blog->userblog_id ) : ?>
 						<a href="<?php echo esc_url( 'http://' . $blog->domain . $blog->path . 'wp-admin/ms-delete-site.php' ); ?>" target="_blank" title="Elimina el bloc">
 							<img src="<?php echo esc_url( plugin_dir_url( __FILE__ ) . 'images/delete.gif' ); ?>" alt="Elimina el Bloc" class="myicon" />
 						</a>
 						<?php endif; ?>
 					<?php else : ?>
 						<a href="<?php echo esc_url( 'http://' . $blog->domain . $blog->path . 'wp-admin/' ); ?>" target="_blank" title="<?php echo esc_attr( $text ); ?>" >
-							<?php
-							if ( 'subscrip' === $image ) {
-								$image = 'user';
-							}
-							if ( 'admin' === $image ) {
-								$image = 'tools';
-							}
-							if ( 'edit' === $image ) {
-								$image = 'edit';
-							}
-							?>
 							<i class="fas fa-<?php echo esc_attr( $image ); ?> my-blocs-image-color"></i>
 						</a>
 						<?php if ( 'tools' === $image && 1 !== $blog->userblog_id ) : ?>
