@@ -1,1 +1,0 @@
-# xtecblocs-ginys
